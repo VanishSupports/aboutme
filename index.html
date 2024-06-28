@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>hvrt's About Me</title>
+<style>
+    body {
+        background-color: #191919; /* Darker background color */
+        font-family: Arial, sans-serif;
+        color: #ffffff; /* White text color */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        position: relative; /* Ensure positioning context for status indicators */
+        flex-direction: column; /* Stack profile and link box vertically */
+    }
+    .status-label {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        color: #7289da; /* Discord theme accent color */
+    }
+    .status-dot {
+        display: inline-block;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        margin-right: 8px;
+    }
+    .green { background-color: #43b581; }
+    .red { background-color: #ed4245; }
+    .orange { background-color: #faa61a; }
+
+    .profile {
+        background-color: #141414; /* Darker background for profile */
+        padding: 20px;
+        border-radius: 20px;
+        text-align: center;
+        box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column; /* Align items in a column */
+        width: 280px; /* Fixed width */
+        margin-bottom: 40px; /* Increased space between profile and link box */
+        margin-top: 20px; /* Adjusted margin top to move up */
+    }
+    .profile img {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        margin-bottom: 10px; /* Spacing between image and text */
+        position: relative;
+    }
+    .status-indicator {
+        position: absolute;
+        bottom: -4px; /* Adjusted position */
+        right: -4px; /* Adjusted position */
+        width: 16px;
+        height: 16px;
+        background-color: #ed4245; /* Discord red color */
+        border-radius: 50%;
+        border: 2px solid #191919; /* Background color of profile box */
+        z-index: 1; /* Ensure indicator is above the profile picture */
+    }
+    .profile .info {
+        text-align: center;
+        color: #7289da; /* Discord theme accent color */
+    }
+    .profile h3, .profile p {
+        margin: 5px 0 0;
+        font-size: 16px;
+        color: #7289da; /* Discord theme accent color */
+    }
+    .link-box {
+        background-color: #141414; /* Darker background color */
+        padding: 20px;
+        border-radius: 10px;
+        text-align: center;
+        box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.3);
+        transform-style: preserve-3d;
+        transition: transform 0.5s, box-shadow 0.5s;
+        position: relative;
+        overflow: hidden;
+        width: 280px; /* Match profile width */
+        margin-bottom: 20px; /* Space between profile and link box */
+    }
+    .link-box a {
+        color: #7289da; /* Discord theme accent color */
+        text-decoration: none;
+        font-size: 16px;
+        word-break: break-all; /* Ensure link wraps within box */
+    }
+    .link-box:hover {
+        transform: translateY(-10px) rotateX(2deg);
+        box-shadow: 0px 12px 24px rgba(0, 0, 0, 0.4);
+    }
+    .container {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        width: 100%;
+        max-width: 1200px;
+        transform-style: preserve-3d;
+        perspective: 1000px;
+        margin-top: 20px; /* Space between link box and container */
+    }
+    .box {
+        background-color: #141414; /* Darker background color */
+        padding: 20px;
+        border-radius: 10px;
+        text-align: center;
+        box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.3);
+        transform-style: preserve-3d;
+        transition: transform 0.5s, box-shadow 0.5s;
+        position: relative;
+        overflow: hidden;
+        width: 300px; /* Increased width */
+    }
+    .box:before {
+        content: '';
+        position: absolute;
+        top: -100%;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(255, 255, 255, 0.1);
+        transform: rotateX(75deg) rotateY(45deg);
+        transition: transform 0.5s;
+    }
+    .box:hover {
+        transform: translateY(-20px) rotateX(5deg);
+        box-shadow: 0px 16px 32px rgba(0, 0, 0, 0.4);
+    }
+    .box:hover:before {
+        transform: rotateX(0deg) rotateY(0deg);
+    }
+    .box h2 {
+        margin-bottom: 10px;
+        font-size: 24px;
+    }
+    .button {
+        background-color: #7289da; /* Light red button color */
+        color: black; /* Black text color */
+        border: none;
+        padding: 12px 24px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 18px;
+        margin-top: 15px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+    }
+    .button:hover {
+        background-color: #7289da; /* Light red button hover color */
+    }
+    /* Modal Styles */
+    .modal {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: fixed;
+        z-index: 999;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.7);
+    }
+    .modal-content {
+        background-color: #141414;
+        color: #ffffff;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+        max-width: 400px;
+        text-align: center;
+        border-radius: 10px;
+    }
+    .close {
+        color: #aaaaaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+    .close:hover,
+    .close:focus {
+        color: #ffffff;
+        text-decoration: none;
+        cursor: pointer;
+    }
+    /* Top Right Corner Link */
+    .top-right-link {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+    }
+    .top-right-link a {
+        color: #383838; /* Dark gray text color */
+        font-size: 16px;
+        text-decoration: none;
+        transition: color 0.3s;
+    }
+    .top-right-link a:hover {
+        color: #ffffff; /* White text color on hover */
+    }
+</style>
+</head>
+<body>
+
+<div class="status-label">
+    <span class="status-dot green"></span> Online &nbsp;
+    <span class="status-dot red"></span> Do Not Disturb &nbsp;
+    <span class="status-dot orange"></span> Idle
+</div>
+
+<div class="profile">
+    <img src="erm.png" alt="Profile Picture">
+    <div class="status-indicator"></div>
+    <div class="info">
+        <h3>hrvt</h3>
+        <p>hvrtbeat</p>
+    </div>
+</div>
+
+<div class="link-box">
+    <a href="https://guns.lol/hvrt" target="_blank">https://guns.lol/hvrt</a>
+</div>
+
+<div class="container">
+    <div class="box">
+        <h2>Dev At Vanish.gg</h2>
+        <a href="https://discord.gg/vanishgg" target="_blank" class="button">Join Server</a>
+    </div>
+    <div class="box">
+        <h2>Dev and Staff at Crystal</h2>
+        <a href="https://discord.gg/getcrystal" target="_blank" class="button">Join Server</a>
+    </div>
+    <div class="box">
+        <h2>Staff and Dev at Famous Selling</h2>
+        <a href="https://discord.gg/famousselling" target="_blank" class="button">Join Server</a>
+    </div>
+</div>
+
+<!-- More About Me Link -->
+<div class="top-right-link">
+    <a href="more.html">More About Me</a>
+</div>
+
+
+
+<audio id="audioPlayer" src="lol.mp3"></audio>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const audioPlayer = document.getElementById("audioPlayer");
+
+        // Modal control
+        const modal = document.getElementById("myModal");
+        const span = document.getElementsByClassName("close")[0];
+
+        span.onclick = function() {
+            modal.style.display = "none";
+            audioPlayer.play(); // Start playing audio on modal close
+        }
+
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+                audioPlayer.play(); // Start playing audio on modal close
+            }
+        }
+    });
+</script>
+
+</body>
+</html>
